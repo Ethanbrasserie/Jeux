@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Unboared - 10 Jeux Rapides</title>
+<title>Game - 20 Jeux Rapides</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -73,7 +73,7 @@
 </head>
 <body>
 
-<header>Unboared - 10 Jeux Rapides</header>
+<header>Unboared - 20 Jeux Rapides</header>
 
 <div id="menu"></div>
 
@@ -85,330 +85,682 @@ const menu = document.getElementById('menu');
 const container = document.getElementById('game-container');
 const message = document.getElementById('message');
 
-// Liste des jeux (10)
+// Liste des 20 jeux
 const games = [
-  { id: 'vf', name: "Vrai ou Faux", fn: vraiOuFaux },
-  { id: 'rapidite', name: "Jeu de Rapidité", fn: jeuRapidite },
-  { id: 'memory', name: "Memory Simple", fn: jeuMemory },
-  { id: 'devinette', name: "Devinettes à choix", fn: jeuDevinette },
-  { id: 'clicvite', name: "Clique vite", fn: jeuCliqueVite },
-  { id: 'calcul', name: "Calcul rapide", fn: jeuCalcul },
-  { id: 'reaction', name: "Réaction GO", fn: jeuReaction },
-  { id: 'ordre', name: "Classe les nombres", fn: jeuOrdre },
-  { id: 'trouveintrus', name: "Trouve l'intrus", fn: jeuTrouveIntrus },
-  { id: 'pattern', name: "Suis le pattern", fn: jeuPattern },
+    { id: 'vf', name: "Vrai ou Faux", fn: vraiOuFaux },
+    { id: 'rapidite', name: "Jeu de Rapidité", fn: jeuRapidite },
+    { id: 'memory', name: "Memory Simple", fn: jeuMemory },
+    { id: 'devinette', name: "Devinettes à choix", fn: jeuDevinette },
+    { id: 'clicvite', name: "Clique vite", fn: jeuCliqueVite },
+    { id: 'calcul', name: "Calcul rapide", fn: jeuCalcul },
+    { id: 'reaction', name: "Réaction GO", fn: jeuReaction },
+    { id: 'ordre', name: "Classe les nombres", fn: jeuOrdre },
+    { id: 'trouveintrus', name: "Trouve l'intrus", fn: jeuTrouveIntrus },
+    { id: 'devinenum', name: "Devine le nombre", fn: jeuDevineNombre },
+    { id: 'couleur', name: "Trouve la couleur", fn: jeuCouleur },
+    { id: 'anagramme', name: "Anagramme", fn: jeuAnagramme },
+    { id: 'citation', name: "Qui a dit ça ?", fn: jeuCitation },
+    { id: 'memoemoji', name: "Memory 6 paires", fn: jeuMemoryExpert },
+    { id: 'multi', name: "Calcul de multiplication", fn: jeuCalculMulti },
+    { id: 'pfc', name: "Pierre-Feuille-Ciseaux", fn: jeuPFC },
+    { id: 'compte', name: "Compte à rebours", fn: jeuCompte },
+    { id: 'capital', name: "Devine la capitale", fn: jeuCapitales },
+    { id: 'chrono', name: "Chronomètre", fn: jeuChrono },
+    { id: 'suite', name: "Suite de nombres", fn: jeuSuiteNombres },
 ];
 
-// Création menu
+// Création du menu
 games.forEach(g => {
-  const btn = document.createElement('button');
-  btn.textContent = g.name;
-  btn.classList.add('game-btn');
-  btn.onclick = () => {
-    message.textContent = '';
-    g.fn();
-  };
-  menu.appendChild(btn);
+    const btn = document.createElement('button');
+    btn.textContent = g.name;
+    btn.classList.add('game-btn');
+    btn.onclick = () => {
+        reset();
+        g.fn();
+    };
+    menu.appendChild(btn);
 });
 
 function reset() {
-  container.innerHTML = '';
-  message.textContent = '';
+    container.innerHTML = '';
+    message.textContent = '';
 }
 
 // --- JEUX ---
 
 // 1 - Vrai ou Faux
 function vraiOuFaux() {
-  reset();
-  const questions = [
-    { q: "Le soleil est une étoile.", a: true },
-    { q: "Les poissons peuvent voler.", a: false },
-    { q: "L'eau bout à 100°C.", a: true },
-    { q: "Les chats aiment l'eau.", a: false },
-  ];
-  let index = 0;
-  let score = 0;
+    reset();
+    const questions = [
+        { q: "Le soleil est une étoile.", a: true },
+        { q: "Les poissons peuvent voler.", a: false },
+        { q: "L'eau bout à 100°C.", a: true },
+        { q: "Les chats aiment l'eau.", a: false },
+    ];
+    let index = 0;
+    let score = 0;
 
-  function showQuestion() {
-    if(index >= questions.length) {
-      container.innerHTML = `<h3>Fini ! Score : ${score} / ${questions.length}</h3>`;
-      return;
+    function showQuestion() {
+        if(index >= questions.length) {
+            container.innerHTML = `<h3>Fini ! Score : ${score} / ${questions.length}</h3>`;
+            return;
+        }
+        const q = questions[index];
+        container.innerHTML = `<h2>${q.q}</h2>`;
+
+        const btnVrai = document.createElement('button');
+        btnVrai.textContent = 'Vrai';
+        btnVrai.classList.add('answer-btn');
+        btnVrai.onclick = () => answer(true);
+        container.appendChild(btnVrai);
+
+        const btnFaux = document.createElement('button');
+        btnFaux.textContent = 'Faux';
+        btnFaux.classList.add('answer-btn');
+        btnFaux.onclick = () => answer(false);
+        container.appendChild(btnFaux);
     }
-    const q = questions[index];
-    container.innerHTML = `<h2>${q.q}</h2>
-      <button class="answer-btn" onclick="answer(true)">Vrai</button>
-      <button class="answer-btn" onclick="answer(false)">Faux</button>`;
-  }
-  window.answer = function(val) {
-    if(val === questions[index].a) score++;
-    index++;
+    function answer(val) {
+        if(val === questions[index].a) score++;
+        index++;
+        showQuestion();
+    }
     showQuestion();
-  };
-  showQuestion();
 }
 
 // 2 - Jeu de rapidité
 function jeuRapidite() {
-  reset();
-  container.innerHTML = `<h2>Attends le bouton vert puis clique vite !</h2>`;
-  const btn = document.createElement('button');
-  btn.textContent = 'Patiente...';
-  btn.style.fontSize = '30px';
-  btn.style.padding = '20px 40px';
-  btn.disabled = true;
-  container.appendChild(btn);
+    reset();
+    container.innerHTML = `<h2>Attends le bouton vert puis clique vite !</h2>`;
+    const btn = document.createElement('button');
+    btn.textContent = 'Patiente...';
+    btn.style.fontSize = '30px';
+    btn.style.padding = '20px 40px';
+    btn.disabled = true;
+    container.appendChild(btn);
 
-  const wait = Math.floor(Math.random() * 4000) + 2000;
-  let startTime;
+    const wait = Math.floor(Math.random() * 4000) + 2000;
+    let startTime;
 
-  setTimeout(() => {
-    btn.style.backgroundColor = 'green';
-    btn.textContent = 'Clique !';
-    btn.disabled = false;
-    startTime = Date.now();
-  }, wait);
+    setTimeout(() => {
+        btn.style.backgroundColor = 'green';
+        btn.textContent = 'Clique !';
+        btn.disabled = false;
+        startTime = Date.now();
+    }, wait);
 
-  btn.onclick = () => {
-    if (!startTime) return;
-    const diff = Date.now() - startTime;
-    container.innerHTML = `<h3>Bravo ! Temps de réaction: ${diff} ms</h3>`;
-  };
+    btn.onclick = () => {
+        if (!startTime) return;
+        const diff = Date.now() - startTime;
+        container.innerHTML = `<h3>Bravo ! Temps de réaction: ${diff} ms</h3>`;
+    };
 }
 
 // 3 - Memory simple (4 paires)
 function jeuMemory() {
-  reset();
-  const cards = ['🍎','🍎','🍌','🍌','🍇','🍇','🥭','🥭'];
-  cards.sort(() => Math.random() - 0.5);
-  let first = null;
-  let second = null;
-  let matched = 0;
+    reset();
+    const cards = ['🍎','🍎','🍌','🍌','🍇','🍇','🥭','🥭'];
+    cards.sort(() => Math.random() - 0.5);
+    let first = null;
+    let second = null;
+    let matched = 0;
 
-  cards.forEach((emoji, i) => {
-    const c = document.createElement('button');
-    c.textContent = '❓';
-    c.style.fontSize = '40px';
-    c.style.margin = '10px';
-    c.style.width = '60px';
-    c.style.height = '60px';
-    c.onclick = () => {
-      if(c.textContent !== '❓' || second) return;
-      c.textContent = emoji;
-      if(!first) first = c;
-      else {
-        second = c;
-        if(first.textContent === second.textContent) {
-          matched += 2;
-          first = null;
-          second = null;
-          if(matched === cards.length) {
-            container.innerHTML = `<h3>Bravo ! Tu as fini le Memory !</h3>`;
-          }
-        } else {
-          setTimeout(() => {
-            first.textContent = '❓';
-            second.textContent = '❓';
-            first = null;
-            second = null;
-          }, 1000);
-        }
-      }
-    };
-    container.appendChild(c);
-  });
+    cards.forEach((emoji) => {
+        const c = document.createElement('button');
+        c.textContent = '❓';
+        c.style.fontSize = '40px';
+        c.style.margin = '10px';
+        c.style.width = '60px';
+        c.style.height = '60px';
+        c.onclick = () => {
+            if(c.textContent !== '❓' || second) return;
+            c.textContent = emoji;
+            if(!first) first = c;
+            else {
+                second = c;
+                if(first.textContent === second.textContent) {
+                    matched += 2;
+                    first = null;
+                    second = null;
+                    if(matched === cards.length) {
+                        container.innerHTML = `<h3>Bravo ! Tu as fini le Memory !</h3>`;
+                    }
+                } else {
+                    setTimeout(() => {
+                        first.textContent = '❓';
+                        second.textContent = '❓';
+                        first = null;
+                        second = null;
+                    }, 1000);
+                }
+            }
+        };
+        container.appendChild(c);
+    });
 }
 
 // 4 - Devinettes à choix multiples
 function jeuDevinette() {
-  reset();
-  const questions = [
-    {
-      q: "Je suis jaune et courbé. Qui suis-je ?",
-      options: ["Banane", "Pomme", "Orange"],
-      answer: "Banane"
-    },
-    {
-      q: "Je suis rouge et je pique. Qui suis-je ?",
-      options: ["Piment", "Tomate", "Fraise"],
-      answer: "Piment"
-    },
-    {
-      q: "Je vole sans ailes. Qui suis-je ?",
-      options: ["Vent", "Oiseau", "Papillon"],
-      answer: "Vent"
-    }
-  ];
-  let index = 0;
-
-  function showQuestion() {
-    if(index >= questions.length) {
-      container.innerHTML = `<h3>Fini les devinettes ! Bravo !</h3>`;
-      return;
-    }
-    const q = questions[index];
-    container.innerHTML = `<h2>${q.q}</h2>`;
-    q.options.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.textContent = opt;
-      btn.className = 'answer-btn';
-      btn.onclick = () => {
-        if(opt === q.answer) {
-          message.textContent = 'Bonne réponse !';
-          index++;
-          setTimeout(() => {
-            message.textContent = '';
-            showQuestion();
-          }, 1000);
-        } else {
-          message.textContent = 'Mauvaise réponse, essaie encore !';
+    reset();
+    const questions = [
+        {
+            q: "Je suis jaune et courbé. Qui suis-je ?",
+            options: ["Banane", "Pomme", "Orange"],
+            answer: "Banane"
+        },
+        {
+            q: "Je suis rouge et je pique. Qui suis-je ?",
+            options: ["Piment", "Tomate", "Fraise"],
+            answer: "Piment"
+        },
+        {
+            q: "Je vole sans ailes. Qui suis-je ?",
+            options: ["Vent", "Oiseau", "Papillon"],
+            answer: "Vent"
         }
-      };
-      container.appendChild(btn);
-    });
-  }
-  showQuestion();
+    ];
+    let index = 0;
+
+    function showQuestion() {
+        if(index >= questions.length) {
+            container.innerHTML = `<h3>Fini les devinettes ! Bravo !</h3>`;
+            return;
+        }
+        const q = questions[index];
+        container.innerHTML = `<h2>${q.q}</h2>`;
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.textContent = opt;
+            btn.className = 'answer-btn';
+            btn.onclick = () => {
+                if(opt === q.answer) {
+                    message.textContent = 'Bonne réponse !';
+                    index++;
+                    setTimeout(() => {
+                        message.textContent = '';
+                        showQuestion();
+                    }, 1000);
+                } else {
+                    message.textContent = 'Mauvaise réponse, essaie encore !';
+                }
+            };
+            container.appendChild(btn);
+        });
+    }
+    showQuestion();
 }
 
 // 5 - Clique vite (compte les clics en 5s)
 function jeuCliqueVite() {
-  reset();
-  container.innerHTML = `<h2>Clique vite sur le bouton pendant 5 secondes !</h2>`;
-  const btn = document.createElement('button');
-  btn.textContent = 'Clique-moi';
-  btn.style.fontSize = '30px';
-  btn.style.padding = '20px 40px';
-  container.appendChild(btn);
-  let count = 0;
+    reset();
+    container.innerHTML = `<h2>Clique vite sur le bouton pendant 5 secondes !</h2>`;
+    const btn = document.createElement('button');
+    btn.textContent = 'Clique-moi';
+    btn.style.fontSize = '30px';
+    btn.style.padding = '20px 40px';
+    container.appendChild(btn);
+    let count = 0;
 
-  btn.onclick = () => {
-    count++;
-    message.textContent = `Clics: ${count}`;
-  };
+    btn.onclick = () => {
+        count++;
+        message.textContent = `Clics: ${count}`;
+    };
 
-  setTimeout(() => {
-    btn.disabled = true;
-    message.textContent = `Temps écoulé ! Total clics: ${count}`;
-  }, 5000);
+    setTimeout(() => {
+        btn.disabled = true;
+        message.textContent = `Temps écoulé ! Total clics: ${count}`;
+    }, 5000);
 }
 
 // 6 - Calcul rapide (addition)
 function jeuCalcul() {
-  reset();
-  let a = Math.floor(Math.random()*20)+1;
-  let b = Math.floor(Math.random()*20)+1;
-  const reponse = a + b;
+    reset();
+    let a = Math.floor(Math.random()*20)+1;
+    let b = Math.floor(Math.random()*20)+1;
+    const reponse = a + b;
 
-  container.innerHTML = `<h2>Combien fait ${a} + ${b} ?</h2>
-  <input type="number" id="calcAnswer" />
-  <br/><br/>
-  <button class="answer-btn" onclick="verifCalc()">Valider</button>
-  <div id="result"></div>`;
+    container.innerHTML = `<h2>Combien fait ${a} + ${b} ?</h2>
+    <input type="number" id="calcAnswer" />
+    <br/><br/>`;
 
-  window.verifCalc = function() {
-    const val = parseInt(document.getElementById('calcAnswer').value);
-    if(val === reponse) {
-      message.textContent = "Bravo, bonne réponse !";
-    } else {
-      message.textContent = `Faux, la bonne réponse est ${reponse}`;
-    }
-  };
+    const btn = document.createElement('button');
+    btn.textContent = 'Valider';
+    btn.classList.add('answer-btn');
+    btn.onclick = () => {
+        const val = parseInt(document.getElementById('calcAnswer').value);
+        if(val === reponse) {
+            message.textContent = "Bravo, bonne réponse !";
+        } else {
+            message.textContent = `Faux, la bonne réponse est ${reponse}`;
+        }
+    };
+    container.appendChild(btn);
+    
+    const resultDiv = document.createElement('div');
+    resultDiv.id = 'result';
+    container.appendChild(resultDiv);
 }
 
 // 7 - Réaction GO (attends le GO puis clique)
 function jeuReaction() {
-  reset();
-  container.innerHTML = `<h2>Attends le signal "GO" et clique vite !</h2>`;
-  const btn = document.createElement('button');
-  btn.textContent = 'Patiente...';
-  btn.style.fontSize = '30px';
-  btn.style.padding = '20px 40px';
-  btn.disabled = true;
-  container.appendChild(btn);
+    reset();
+    container.innerHTML = `<h2>Attends le signal "GO" et clique vite !</h2>`;
+    const btn = document.createElement('button');
+    btn.textContent = 'Patiente...';
+    btn.style.fontSize = '30px';
+    btn.style.padding = '20px 40px';
+    btn.disabled = true;
+    container.appendChild(btn);
 
-  let startTime;
+    let startTime;
 
-  const wait = Math.floor(Math.random()*5000)+2000;
-  setTimeout(() => {
-    btn.textContent = 'GO ! Clique !';
-    btn.style.backgroundColor = 'green';
-    btn.disabled = false;
-    startTime = Date.now();
-  }, wait);
+    const wait = Math.floor(Math.random()*5000)+2000;
+    setTimeout(() => {
+        btn.textContent = 'GO ! Clique !';
+        btn.style.backgroundColor = 'green';
+        btn.disabled = false;
+        startTime = Date.now();
+    }, wait);
 
-  btn.onclick = () => {
-    if (!startTime) {
-      message.textContent = "Trop tôt ! Attends le signal GO.";
-      return;
-    }
-    const diff = Date.now() - startTime;
-    container.innerHTML = `<h3>Ton temps de réaction : ${diff} ms</h3>`;
-  };
+    btn.onclick = () => {
+        if (!startTime) {
+            message.textContent = "Trop tôt ! Attends le signal GO.";
+            return;
+        }
+        const diff = Date.now() - startTime;
+        container.innerHTML = `<h3>Ton temps de réaction : ${diff} ms</h3>`;
+    };
 }
 
 // 8 - Classe les nombres (ordre croissant)
 function jeuOrdre() {
-  reset();
-  const nums = [];
-  while(nums.length<4) {
-    const n = Math.floor(Math.random()*50)+1;
-    if(!nums.includes(n)) nums.push(n);
-  }
-  const shuffled = [...nums].sort(() => Math.random()-0.5);
-
-  container.innerHTML = `<h2>Classe ces nombres dans l'ordre croissant :</h2>
-  <div id="numList">${shuffled.map(n => `<button class="answer-btn" onclick="selectNum(${n})">${n}</button>`).join('')}</div>
-  <div style="margin-top:20px;">
-    <h3>Ta sélection :</h3>
-    <div id="selection"></div>
-    <button id="verifBtn" class="answer-btn" disabled>Vérifier</button>
-  </div>`;
-
-  const selection = [];
-  window.selectNum = function(n) {
-    if(selection.includes(n)) return;
-    if(selection.length >= shuffled.length) return;
-    selection.push(n);
-    updateSelection();
-  };
-
-  function updateSelection() {
-    const selDiv = document.getElementById('selection');
-    selDiv.innerHTML = selection.map(n => `<span style="margin:5px; font-size:20px;">${n}</span>`).join('');
-    document.getElementById('verifBtn').disabled = selection.length !== shuffled.length;
-  }
-
-  document.getElementById('verifBtn').onclick = () => {
-    const sortedSel = [...selection].sort((a,b) => a-b);
-    if(sortedSel.every((v,i) => v === selection[i])) {
-      message.textContent = "Bravo, c'est dans le bon ordre !";
-    } else {
-      message.textContent = `Non, l'ordre correct est : ${sortedSel.join(', ')}`;
+    reset();
+    const nums = [];
+    while(nums.length<4) {
+        const n = Math.floor(Math.random()*50)+1;
+        if(!nums.includes(n)) nums.push(n);
     }
-    selection.length = 0;
-    updateSelection();
-  };
+    const shuffled = [...nums].sort(() => Math.random()-0.5);
+    const sorted = [...nums].sort((a,b) => a-b);
+
+    container.innerHTML = `<h2>Classe ces nombres dans l'ordre croissant :</h2>`;
+    
+    const numList = document.createElement('div');
+    numList.id = 'numList';
+    shuffled.forEach(n => {
+        const btn = document.createElement('button');
+        btn.classList.add('answer-btn');
+        btn.textContent = n;
+        btn.onclick = () => selectNum(n);
+        numList.appendChild(btn);
+    });
+    container.appendChild(numList);
+
+    const selection = [];
+    function selectNum(n) {
+        if(selection.includes(n)) return;
+        if(selection.length >= shuffled.length) return;
+        selection.push(n);
+        updateSelection();
+    }
+    function updateSelection() {
+        const selDiv = document.createElement('div');
+        selDiv.style.marginTop = '20px';
+        selDiv.innerHTML = selection.map(n => `<span style="margin:5px; font-size:20px;">${n}</span>`).join('');
+        container.querySelector('#selection').replaceWith(selDiv);
+        document.getElementById('verifBtn').disabled = selection.length !== shuffled.length;
+    }
+
+    const lowerDiv = document.createElement('div');
+    lowerDiv.style.marginTop = '20px';
+    lowerDiv.innerHTML = `<h3>Ta sélection :</h3><div id="selection"></div>`;
+
+    const verifBtn = document.createElement('button');
+    verifBtn.id = 'verifBtn';
+    verifBtn.classList.add('answer-btn');
+    verifBtn.textContent = 'Vérifier';
+    verifBtn.disabled = true;
+    verifBtn.onclick = () => {
+        if(selection.toString() === sorted.toString()) {
+            message.textContent = "Bravo, c'est dans le bon ordre !";
+        } else {
+            message.textContent = `Non, l'ordre correct est : ${sorted.join(', ')}`;
+        }
+        selection.length = 0;
+        updateSelection();
+    };
+    lowerDiv.appendChild(verifBtn);
+    container.appendChild(lowerDiv);
 }
 
 // 9 - Trouve l'intrus
 function jeuTrouveIntrus() {
-  reset();
-  const groupes = [
-    {items: ['🍎','🍌','🍇','🍓','🥦'], intrus: '🥦'}, // fruits + un légume
-    {items: ['⚽️','🏀','🎾','🚗','🏈'], intrus: '🚗'}, // balles + voiture
-    {items: ['🐶','🐱','🐭','🍕','🐰'], intrus: '🍕'}, // animaux + nourriture
-  ];
-  const g = groupes[Math.floor(Math.random()*groupes.length)];
-  const shuffled = [...g.items].sort(() => Math.random()-0.5);
+    reset();
+    const groupes = [
+        {items: ['🍎','🍌','🍇','🍓','🥦'], intrus: '🥦'}, // fruits + un légume
+        {items: ['⚽️','🏀','🎾','🚗','🏈'], intrus: '🚗'}, // balles + voiture
+        {items: ['🐶','🐱','🐭','🍕','🐰'], intrus: '🍕'}, // animaux + nourriture
+    ];
+    const g = groupes[Math.floor(Math.random()*groupes.length)];
+    const shuffled = [...g.items].sort(() => Math.random()-0.5);
 
-  container.innerHTML = `<h2>Trouve l'intrus :</h2>
-  <div>${shuffled.map(i => `<button class="answer-btn" onclick="checkIntrus('${i}')">${i}</button>`).join('')}</div>`;
+    container.innerHTML = `<h2>Trouve l'intrus :</h2>`;
+    const btnDiv = document.createElement('div');
+    shuffled.forEach(i => {
+        const btn = document.createElement('button');
+        btn.classList.add('answer-btn');
+        btn.textContent = i;
+        btn.onclick = () => checkIntrus(i);
+        btnDiv.appendChild(btn);
+    });
+    container.appendChild(btnDiv);
 
-  window.checkIntrus = function(c) {
-    if(c === g.intrus) {
-      message.textContent = "Bravo, tu as trouvé l'intrus !";
-    } else {
-      message.textContent = "Non, ce n'est pas l'intrus, essaie encore.";
+    function checkIntrus(c) {
+        if(c === g.intrus) {
+            message.textContent = "Bravo, tu as trouvé l'intrus !";
+        } else {
+            message.textContent = "Non, ce n'est pas l'intrus, essaie encore.";
+        }
     }
-  };
 }
+
+// 10 - Devine le nombre (entre 1 et 100)
+function jeuDevineNombre() {
+    reset();
+    const nombreSecret = Math.floor(Math.random() * 100) + 1;
+    let tentatives = 0;
+
+    container.innerHTML = `<h2>Devine le nombre (entre 1 et 100)</h2>
+    <input type="number" id="guessInput" />
+    <br/><br/>
+    <button class="answer-btn" id="guessBtn">Valider</button>`;
+
+    document.getElementById('guessBtn').onclick = () => {
+        const guess = parseInt(document.getElementById('guessInput').value);
+        if (isNaN(guess)) return;
+        tentatives++;
+        if (guess === nombreSecret) {
+            message.textContent = `Bravo ! Tu as trouvé en ${tentatives} tentatives !`;
+        } else if (guess < nombreSecret) {
+            message.textContent = `Trop petit ! Essaie encore.`;
+        } else {
+            message.textContent = `Trop grand ! Essaie encore.`;
+        }
+    };
+}
+
+// 11 - Trouve la couleur
+function jeuCouleur() {
+    reset();
+    const couleurs = ['rouge', 'bleu', 'vert', 'jaune', 'noir'];
+    const bonneCouleur = couleurs[Math.floor(Math.random() * couleurs.length)];
+
+    container.innerHTML = `<h2>Clique sur le bouton qui a la couleur "${bonneCouleur}"</h2>`;
+    
+    const shuffledCouleurs = [...couleurs].sort(() => Math.random() - 0.5);
+    shuffledCouleurs.forEach(c => {
+        const btn = document.createElement('button');
+        btn.textContent = c;
+        btn.classList.add('answer-btn');
+        btn.style.backgroundColor = c;
+        btn.style.color = (c === 'noir' || c === 'bleu') ? 'white' : 'black';
+        btn.onclick = () => {
+            if (c === bonneCouleur) {
+                message.textContent = 'Bravo, bonne réponse !';
+            } else {
+                message.textContent = 'Mauvaise réponse, essaie encore.';
+            }
+        };
+        container.appendChild(btn);
+    });
+}
+
+// 12 - Anagramme
+function jeuAnagramme() {
+    reset();
+    const mots = ['javascript', 'ordinateur', 'programme', 'developpeur'];
+    const motOriginal = mots[Math.floor(Math.random() * mots.length)];
+    const motAnag = motOriginal.split('').sort(() => Math.random() - 0.5).join('');
+
+    container.innerHTML = `<h2>Remets les lettres dans le bon ordre :</h2>
+    <h3>${motAnag}</h3>
+    <input type="text" id="anagrammeInput" />
+    <br/><br/>
+    <button class="answer-btn" id="anagrammeBtn">Valider</button>`;
+
+    document.getElementById('anagrammeBtn').onclick = () => {
+        const reponse = document.getElementById('anagrammeInput').value.toLowerCase();
+        if (reponse === motOriginal) {
+            message.textContent = 'Bravo, c\'est correct !';
+        } else {
+            message.textContent = 'Faux, essaie encore.';
+        }
+    };
+}
+
+// 13 - Qui a dit ça ?
+function jeuCitation() {
+    reset();
+    const citations = [
+        { q: "Il n'y a pas de problème, il n'y a que des solutions.", a: "André Gide" },
+        { q: "La vie, c'est comme une bicyclette, il faut avancer pour ne pas perdre l'équilibre.", a: "Albert Einstein" },
+        { q: "Je pense, donc je suis.", a: "René Descartes" },
+    ];
+    const c = citations[Math.floor(Math.random() * citations.length)];
+    const options = [c.a, 'Voltaire', 'Victor Hugo', 'Napoléon'].sort(() => Math.random() - 0.5);
+
+    container.innerHTML = `<h2>"${c.q}"</h2>`;
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.classList.add('answer-btn');
+        btn.onclick = () => {
+            if (opt === c.a) {
+                message.textContent = 'Bonne réponse !';
+            } else {
+                message.textContent = `Mauvaise réponse, c'était ${c.a}.`;
+            }
+        };
+        container.appendChild(btn);
+    });
+}
+
+// 14 - Memory expert (6 paires)
+function jeuMemoryExpert() {
+    reset();
+    const cards = ['🍎','🍎','🍌','🍌','🍇','🍇','🥭','🥭','🥝','🥝','🍉','🍉'];
+    cards.sort(() => Math.random() - 0.5);
+    let first = null;
+    let second = null;
+    let matched = 0;
+
+    cards.forEach((emoji) => {
+        const c = document.createElement('button');
+        c.textContent = '❓';
+        c.style.fontSize = '40px';
+        c.style.margin = '10px';
+        c.style.width = '60px';
+        c.style.height = '60px';
+        c.onclick = () => {
+            if(c.textContent !== '❓' || second) return;
+            c.textContent = emoji;
+            if(!first) first = c;
+            else {
+                second = c;
+                if(first.textContent === second.textContent) {
+                    matched += 2;
+                    first = null;
+                    second = null;
+                    if(matched === cards.length) {
+                        container.innerHTML = `<h3>Bravo ! Tu as fini le Memory expert !</h3>`;
+                    }
+                } else {
+                    setTimeout(() => {
+                        first.textContent = '❓';
+                        second.textContent = '❓';
+                        first = null;
+                        second = null;
+                    }, 1000);
+                }
+            }
+        };
+        container.appendChild(c);
+    });
+}
+
+// 15 - Calcul de multiplication
+function jeuCalculMulti() {
+    reset();
+    let a = Math.floor(Math.random()*10)+1;
+    let b = Math.floor(Math.random()*10)+1;
+    const reponse = a * b;
+
+    container.innerHTML = `<h2>Combien fait ${a} x ${b} ?</h2>
+    <input type="number" id="calcAnswer" />
+    <br/><br/>`;
+
+    const btn = document.createElement('button');
+    btn.textContent = 'Valider';
+    btn.classList.add('answer-btn');
+    btn.onclick = () => {
+        const val = parseInt(document.getElementById('calcAnswer').value);
+        if(val === reponse) {
+            message.textContent = "Bravo, bonne réponse !";
+        } else {
+            message.textContent = `Faux, la bonne réponse est ${reponse}`;
+        }
+    };
+    container.appendChild(btn);
+}
+
+// 16 - Pierre-Feuille-Ciseaux
+function jeuPFC() {
+    reset();
+    container.innerHTML = `<h2>Choisis ton coup :</h2>`;
+    const coups = ['Pierre', 'Feuille', 'Ciseaux'];
+    coups.forEach(c => {
+        const btn = document.createElement('button');
+        btn.textContent = c;
+        btn.classList.add('answer-btn');
+        btn.onclick = () => {
+            const coupCPU = coups[Math.floor(Math.random() * coups.length)];
+            let res;
+            if (c === coupCPU) {
+                res = "Égalité !";
+            } else if ((c === 'Pierre' && coupCPU === 'Ciseaux') ||
+                       (c === 'Feuille' && coupCPU === 'Pierre') ||
+                       (c === 'Ciseaux' && coupCPU === 'Feuille')) {
+                res = "Tu as gagné !";
+            } else {
+                res = "Tu as perdu !";
+            }
+            container.innerHTML = `<h3>Tu as choisi ${c}, l'ordinateur a choisi ${coupCPU}.<br/>${res}</h3>`;
+        };
+        container.appendChild(btn);
+    });
+}
+
+// 17 - Compte à rebours
+function jeuCompte() {
+    reset();
+    container.innerHTML = `<h2>Compte à rebours de 5 secondes...</h2>`;
+    let timeLeft = 5;
+    const countdown = document.createElement('h3');
+    countdown.textContent = timeLeft;
+    container.appendChild(countdown);
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        countdown.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            countdown.textContent = 'FINI !';
+        }
+    }, 1000);
+}
+
+// 18 - Devine la capitale
+function jeuCapitales() {
+    reset();
+    const capitales = [
+        { q: "France", a: "Paris" },
+        { q: "Japon", a: "Tokyo" },
+        { q: "Espagne", a: "Madrid" },
+        { q: "Allemagne", a: "Berlin" },
+    ];
+    const c = capitales[Math.floor(Math.random() * capitales.length)];
+
+    container.innerHTML = `<h2>Quelle est la capitale de la ${c.q} ?</h2>
+    <input type="text" id="capitaleInput" />
+    <br/><br/>
+    <button class="answer-btn" id="capitaleBtn">Valider</button>`;
+
+    document.getElementById('capitaleBtn').onclick = () => {
+        const reponse = document.getElementById('capitaleInput').value.toLowerCase();
+        if (reponse === c.a.toLowerCase()) {
+            message.textContent = 'Bravo, bonne réponse !';
+        } else {
+            message.textContent = `Faux, la bonne réponse était ${c.a}.`;
+        }
+    };
+}
+
+// 19 - Chronomètre
+function jeuChrono() {
+    reset();
+    let startTime;
+    let running = false;
+    let timer;
+
+    container.innerHTML = `<h2>Chronomètre</h2>`;
+    const display = document.createElement('h3');
+    display.textContent = '0.000s';
+    container.appendChild(display);
+
+    const startBtn = document.createElement('button');
+    startBtn.textContent = 'Démarrer';
+    startBtn.classList.add('answer-btn');
+    startBtn.onclick = () => {
+        if (!running) {
+            startTime = Date.now();
+            timer = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                display.textContent = `${elapsed.toFixed(3)}s`;
+            }, 10);
+            startBtn.textContent = 'Stop';
+            running = true;
+        } else {
+            clearInterval(timer);
+            startBtn.textContent = 'Redémarrer';
+            running = false;
+        }
+    };
+    container.appendChild(startBtn);
+}
+
+// 20 - Suite de nombres
+function jeuSuiteNombres() {
+    reset();
+    const start = Math.floor(Math.random() * 10) + 1;
+    const diff = Math.floor(Math.random() * 5) + 2;
+    const suite = [start, start + diff, start + diff * 2, start + diff * 3];
+    const next = start + diff * 4;
+
+    container.innerHTML = `<h2>Quel est le prochain nombre dans cette suite ?</h2>
+    <h3>${suite.join(', ')}, ?</h3>
+    <input type="number" id="suiteInput" />
+    <br/><br/>
+    <button class="answer-btn" id="suiteBtn">Valider</button>`;
+
+    document.getElementById('suiteBtn').onclick = () => {
+        const guess = parseInt(document.getElementById('suiteInput').value);
+        if (guess === next) {
+            message.textContent = 'Bravo, c\'est correct !';
+        } else {
+            message.textContent = `Faux, la bonne réponse était ${next}.`;
+        }
+    };
+}
+</script>
+</body>
+</html>
